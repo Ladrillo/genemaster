@@ -1,37 +1,50 @@
 export default class Encounter {
 
-    constructor(a, b) {
+    fight(red, blue) {
 
-        this.a = a;
-        this.b = b;
-    }
+        let winner = this.winnerByPoints(red, blue);
+        let loser = red === winner ? blue : red;
 
-    fight() {
-
-        if (this.a.fightMode === 'hawk' && this.b.fightMode === 'dove') {
-            this.a.lifePoints += 50;
-            this.b.lifePoints += 0;
+        if (red.fightMode === 'hawk' && blue.fightMode === 'dove') {
+            red.lifePoints += 50;
+            blue.lifePoints += 0;
         }
-        if (this.a.fightMode === 'hawk' && this.b.fightMode === 'hawk') {
-            let winner = this.winnerByPoints();
-            let loser = this.a === this.winnerByPoints() ? this.b : this.a;
+        if (red.fightMode === 'hawk' && blue.fightMode === 'hawk') {
             winner.lifePoints += 50;
             loser.lifePoints -= 100;
         }
-        if (this.a.fightMode === 'dove' && this.b.fightMode === 'hawk') {
-            this.a.lifePoints += 0;
-            this.b.lifePoints += 50;
+        if (red.fightMode === 'dove' && blue.fightMode === 'hawk') {
+            red.lifePoints += 0;
+            blue.lifePoints += 50;
         }
-        if (this.a.fightMode === 'dove' && this.b.fightMode === 'dove') {
-            let winner = this.winnerByPoints();
-            let loser = this.a === this.winnerByPoints() ? this.b : this.a;
+        if (red.fightMode === 'dove' && blue.fightMode === 'dove') {
             winner.lifePoints += 50;
             loser.lifePoints -= 0;
         }
     }
 
-    winnerByPoints() {
+    interact(red, blue) {
 
-        return this.a.lifePoints > this.b.lifePoints ? this.a : this.b;
+        if (red.interactMode === 'colaborate' && blue.interactMode === 'colaborate') {
+            red.lifePoints += 30;
+            blue.lifePoints += 30;
+        }
+        if (red.interactMode === 'colaborate' && blue.interactMode === 'defect') {
+            red.lifePoints -= 30;
+            blue.lifePoints += 50;
+        }
+        if (red.interactMode === 'defect' && blue.interactMode === 'colaborate') {
+            red.lifePoints += 50;
+            blue.lifePoints -= 30;
+        }
+        if (red.interactMode === 'defect' && blue.interactMode === 'defect') {
+            red.lifePoints -= 10;
+            blue.lifePoints -= 10;
+        }
+    }
+
+    winnerByPoints(red, blue) {
+
+        return red.lifePoints > blue.lifePoints ? red : blue;
     }
 }
