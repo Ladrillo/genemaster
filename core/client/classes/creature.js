@@ -2,6 +2,9 @@ import chai from 'chai';
 let expect = chai.expect;
 chai.should();
 
+import { config } from './config';
+let geneConfig = config.geneConfig;
+
 export class Creature {
 
     constructor(genetics, random) {
@@ -27,58 +30,62 @@ export class Creature {
                 interactGene: genetics.interactGene[flipCoin()]
             };
         }
-        console.log(this);
+        console.log(this, `random: ${random}`);
     }
 }
 
 export function creatureTests() {
 
-    describe('random Creature', function () {
-
-        let randomCreature = new Creature({
-            fightGene: ['dove', 'hawk'],
-            interactGene: ['colaborate', 'defect'],
-        }, true);
-
-        it('should have id, lifePoints, onWar and genetics', function () {
-            expect(randomCreature).to.have.all.keys('id', 'lifePoints', 'onWar', 'genetics');
-        });
-        it('should have genetics for fight and interactions', function () {
-            expect(randomCreature.genetics).to.have.all.keys('fightGene', 'interactGene');
-        });
-        it('should have lifePoints between 20 - 100', function () {
-            expect(randomCreature.lifePoints).to.be.within(20, 100);
-        });
-        it('should have a fightGene of either dove or hawk', function () {
-            expect(randomCreature.genetics.fightGene).to.satisfy(e => e === 'dove' || e === 'hawk');
-        });
-        it('should have a interactGene of either colaborate or defect', function () {
-            expect(randomCreature.genetics.interactGene).to.satisfy(e => e === 'colaborate' || e === 'defect');
-        });
-    });
-    
     describe('non-random Creature', function () {
 
-        let nonRandomCreature = new Creature({
-            fightGene: 'dove',
-            interactGene: 'defect'
-        });
+        let creature = new Creature({
+            fightGene: geneConfig.fightGene[0],
+            interactGene: geneConfig.interactGene[1]
+        }, false);
 
         it('should have id, lifePoints, onWar and genetics', function () {
-            expect(nonRandomCreature).to.have.all.keys('id', 'lifePoints', 'onWar', 'genetics');
+            expect(creature).to.have.all.keys('id', 'lifePoints', 'onWar', 'genetics');
         });
         it('should have genetics for fight and interactions', function () {
-            expect(nonRandomCreature.genetics).to.have.all.keys('fightGene', 'interactGene');
+            expect(creature.genetics).to.have.all.keys('fightGene', 'interactGene');
         });
         it('should have lifePoints between 20 - 100', function () {
-            expect(nonRandomCreature.lifePoints).to.be.within(20, 100);
+            expect(creature.lifePoints).to.be.within(20, 100);
         });
-        it('should have a fightGene of either dove or hawk', function () {
-            expect(nonRandomCreature.genetics.fightGene).to.satisfy(e => e === 'dove' || e === 'hawk');
+        it(`should have fightGene of either ${geneConfig.fightGene[0]} or ${geneConfig.fightGene[1]}`, function () {
+            expect(creature.genetics.fightGene).to.satisfy(e =>
+                e === `${geneConfig.fightGene[0]}` ||
+                e === `${geneConfig.fightGene[1]}`);
         });
-        it('should have a interactGene of either colaborate or defect', function () {
-            expect(nonRandomCreature.genetics.interactGene).to.satisfy(e => e === 'colaborate' || e === 'defect');
+        it(`should have interactGene of either ${geneConfig.interactGene[0]} or ${geneConfig.interactGene[1]}`, function () {
+            expect(creature.genetics.interactGene).to.satisfy(e =>
+                e === `${geneConfig.interactGene[0]}` ||
+                e === `${geneConfig.interactGene[1]}`);
         });
     });
 
+    describe('random Creature', function () {
+
+        let creature = new Creature(geneConfig, true);
+
+        it('should have id, lifePoints, onWar and genetics', function () {
+            expect(creature).to.have.all.keys('id', 'lifePoints', 'onWar', 'genetics');
+        });
+        it('should have genetics for fight and interactions', function () {
+            expect(creature.genetics).to.have.all.keys('fightGene', 'interactGene');
+        });
+        it('should have lifePoints between 20 - 100', function () {
+            expect(creature.lifePoints).to.be.within(20, 100);
+        });
+        it(`should have fightGene of either ${geneConfig.fightGene[0]} or ${geneConfig.fightGene[1]}`, function () {
+            expect(creature.genetics.fightGene).to.satisfy(e =>
+                e === `${geneConfig.fightGene[0]}` ||
+                e === `${geneConfig.fightGene[1]}`);
+        });
+        it(`should have interactGene of either ${geneConfig.interactGene[0]} or ${geneConfig.interactGene[1]}`, function () {
+            expect(creature.genetics.interactGene).to.satisfy(e =>
+                e === `${geneConfig.interactGene[0]}` ||
+                e === `${geneConfig.interactGene[1]}`);
+        });
+    });
 }

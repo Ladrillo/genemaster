@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.jsx",
   "scripts": {
-    "test": "mocha -w tests.js --compilers js:babel-register"
+    "test": "mocha -w mocha.js --compilers js:babel-register"
   },
   "repository": {
     "type": "git",
