@@ -11,10 +11,10 @@ let randomLife = () => Math.floor(Math.random() * 81) + 20;
 
 export class Creature {
 
-    constructor(genetics, random) {
+    constructor(genetics, random, lifepoints) {
         
         this.id = new Date().valueOf();
-        this.lifePoints = randomLife();
+        this.lifePoints = lifepoints || randomLife();
         this.onWar = false;
 
         if (!random) {
@@ -31,7 +31,7 @@ export class Creature {
                 interactGene: genetics.interactGene[flipCoin()]
             };
         }
-        console.log(this, `random: ${random}`);
+        // console.log(this, `random: ${random}`);
     }
 }
 

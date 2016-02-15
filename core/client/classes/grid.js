@@ -28,7 +28,7 @@ export function gridTests() {
         let squares = [2, 3];
         let nOfSquares = squares[0] * squares[1];
         let testGrid = new Grid(...squares);
-        console.log('test grid -> ', testGrid);
+        // console.log('test grid -> ', testGrid);
 
         it('should generate grids with correct number of squares', function () {
             expect(testGrid.squares.length).to.equal(nOfSquares);

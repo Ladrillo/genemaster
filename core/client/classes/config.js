@@ -8,7 +8,7 @@ let config = (function () {
         interaction: {
             colaborated: 30,
             suckered: -30,
-            cheated: 50,
+            cheated: 40,
             defected: -10
         },
         fight: {

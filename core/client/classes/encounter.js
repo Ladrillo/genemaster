@@ -5,97 +5,134 @@ chai.should();
 import { Creature } from './creature';
 import { config } from './config';
 
-let interaction = config.interaction;
-let genes = config.genes;
-let fight = config.fight;
-let interact = config.interact;
+// shortcuts for fight points
+let won = config.fight.won;
+let lost = config.fight.lost;
+let fled = config.fight.fled;
+
+// shortcuts for interaction points
+let suckered = config.interaction.suckered;
+let cheated = config.interaction.cheated;
+let colaborated = config.interaction.colaborated;
+let defected = config.interaction.defected;
+
+// fight mode genes
+let hawkish = config.genes.fightGene[1];
+let dovish = config.genes.fightGene[0];
+
+// interaction mode genes
+let colaborator = config.genes.interactGene[0];
+let cheater = config.genes.interactGene[1];
 
 export class Encounter {
 
-    fight([red, blue]) {
+    fight(red, blue) {
 
-        let winner = this.winnerByPoints([red, blue]);
+        let winner = this.winnerByPoints(red, blue);
         let loser = red === winner ? blue : red;
 
-        if (red.genetics.fightGene === genes.fightGene[1] && blue.genetics.fightGene === genes.fightGene[0]) {
-            red.lifePoints += fight.won;
-            blue.lifePoints += fight.fled;
+        if (red.genetics.fightGene === hawkish && blue.genetics.fightGene === dovish) {
+            red.lifePoints += won;
+            blue.lifePoints += fled;
         }
-        if (red.genetics.fightGene === genes.fightGene[1] && blue.genetics.fightGene === genes.fightGene[1]) {
-            winner.lifePoints += fight.won;
-            loser.lifePoints += fight.lost;
+        if (red.genetics.fightGene === hawkish && blue.genetics.fightGene === hawkish) {
+            winner.lifePoints += won;
+            loser.lifePoints += lost;
         }
-        if (red.genetics.fightGene === genes.fightGene[0] && blue.genetics.fightGene === genes.fightGene[1]) {
-            red.lifePoints += fight.fled;
-            blue.lifePoints += fight.won;
+        if (red.genetics.fightGene === dovish && blue.genetics.fightGene === hawkish) {
+            red.lifePoints += fled;
+            blue.lifePoints += won;
         }
-        if (red.genetics.fightGene === genes.fightGene[0] && blue.genetics.fightGene === genes.fightGene[0]) {
-            winner.lifePoints += fight.won;
-            loser.lifePoints += fight.fled;
-        }
-        return [red, blue];
-    }
-
-    interact([red, blue]) {
-
-        if (red.genetics.genes === genes.colaborateGene[0] && blue.genetics.genes === genes.colaborateGene[0]) {
-            red.lifePoints += 30;
-            blue.lifePoints += 30;
-        }
-        if (red.genetics.genes === genes.colaborateGene[0] && blue.genetics.genes === genes.colaborateGene[1]) {
-            red.lifePoints -= 30;
-            blue.lifePoints += 50;
-        }
-        if (red.genetics.genes === genes.colaborateGene[1] && blue.genetics.genes === genes.colaborateGene[0]) {
-            red.lifePoints += 50;
-            blue.lifePoints -= 30;
-        }
-        if (red.genetics.genes === genes.colaborateGene[1] && blue.genetics.genes === genes.colaborateGene[1]) {
-            red.lifePoints -= 10;
-            blue.lifePoints -= 10;
+        if (red.genetics.fightGene === dovish && blue.genetics.fightGene === dovish) {
+            winner.lifePoints += won;
+            loser.lifePoints += fled;
         }
     }
 
-    winnerByPoints([red, blue]) {
+    interact(red, blue) {
+
+        if (red.genetics === colaborator && blue.genetics === colaborator) {
+            red.lifePoints += colaborated;
+            blue.lifePoints += colaborated;
+        }
+        if (red.genetics === colaborator && blue.genetics === cheater) {
+            red.lifePoints += suckered;
+            blue.lifePoints += cheated;
+        }
+        if (red.genetics === cheater && blue.genetics === colaborator) {
+            red.lifePoints += cheated;
+            blue.lifePoints += suckered;
+        }
+        if (red.genetics === cheater && blue.genetics === cheater) {
+            red.lifePoints += defected;
+            blue.lifePoints += defected;
+        }
+    }
+
+    winnerByPoints(red, blue) {
 
         return red.lifePoints > blue.lifePoints ? red : blue;
     }
 }
 
 export function encounterTests() {
-
+    
+    let encounter = new Encounter();
+    let cheatingHawk, cheatingDove, colaboratingHawk, colaboratingDove;
+    
     describe('Encounter class', () => {
+        
+        let [a, b, c, d] = [50, 100, 150, 200];
+        
+        let setPlayers = () => {
 
-        let cheatingHawk = new Creature({
-            fightGene: genes.fightGene[0],
-            interactGene: genes.interactGene[1]
-        }, false);
-        let cheatingHawkInitialLife = cheatingHawk.lifePoints;
+            cheatingHawk = new Creature({
+                fightGene: hawkish,
+                interactGene: cheater
+            }, false, a);
 
-        let cheatingDove = new Creature({
-            fightGene: genes.fightGene[0],
-            interactGene: genes.interactGene[1]
-        }, false);
-        let cheatingDoveInitialLife = cheatingDove.lifePoints;
-        
-        let colaboratingHawk = new Creature({
-            fightGene: genes.fightGene[0],
-            interactGene: genes.interactGene[1]
-        }, false);
-        let colaboratingHawkInitialLife = colaboratingHawk.lifePoints;
-        
-        let colaboratingDove = new Creature({
-            fightGene: genes.fightGene[0],
-            interactGene: genes.interactGene[1]
-        }, false);
-        let colaboratingDoveInitialLife = colaboratingDove.lifePoints;
-        
-        let encounter = new Encounter();
-        
+            cheatingDove = new Creature({
+                fightGene: dovish,
+                interactGene: cheater
+            }, false, b);
+
+            colaboratingHawk = new Creature({
+                fightGene: hawkish,
+                interactGene: colaborator
+            }, false, c);
+
+            colaboratingDove = new Creature({
+                fightGene: dovish,
+                interactGene: colaborator
+            }, false, d);
+
+            encounter = new Encounter();
+        };
+
         it('hawk fighting hawk ends up badly for one', () => {
             
-             encounter.fight(cheatingHawk, colaboratingHawk);
-             expect()
+            setPlayers();
+            encounter.fight(cheatingHawk, colaboratingHawk);
+            expect(cheatingHawk.lifePoints).to.equal(a + lost);
+            expect(colaboratingHawk.lifePoints).to.equal(c + won);
+            
+            setPlayers();
+            encounter.fight(colaboratingHawk, cheatingHawk);
+            expect(cheatingHawk.lifePoints).to.equal(a + lost);
+            expect(colaboratingHawk.lifePoints).to.equal(c + won);
+        });
+        
+        it('hawk fighting dove dove fleas', () => {
+            
+            setPlayers();
+            encounter.fight(cheatingHawk, cheatingDove);
+            expect(cheatingHawk.lifePoints).to.equal(a + won);
+            expect(cheatingDove.lifePoints).to.equal(b + fled);
+            
+            setPlayers();
+            encounter.fight(cheatingDove, cheatingHawk);
+            expect(cheatingHawk.lifePoints).to.equal(a + won);
+            expect(cheatingDove.lifePoints).to.equal(b + fled);
         });
 
 
